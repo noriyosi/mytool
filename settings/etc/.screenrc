@@ -1,0 +1,13 @@
+
+escape ^Ll
+maptimeout 0
+
+termcapinfo xterm* 'Co#256:pa#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm:'
+attrcolor b ".I"
+defbce "on"
+term xterm-256color
+shell /usr/bin/zsh
+
+defencoding utf8
+encoding utf8 utf8
+

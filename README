@@ -1,0 +1,39 @@
+github メモ 
+[msysgit]
+  http://code.google.com/p/msysgit/downloads/list
+
+(http/https で通信)
+1. ssh key 作成
+  Windows
+    http://help.github.com/msysgit-key-setup/
+
+  Mac
+    http://help.github.com/mac-key-setup/
+
+  Linux
+    http://help.github.com/linux-key-setup/
+
+2. account に ssh key を登録
+  https://github.com/account
+
+  ssh key を登録
+    cat ~/.ssh/id_rsa.pub > /dev/clip
+
+3. http で clone
+  git clone http://github.com/noriyosi/mytools.git
+
+4. https で push 可能にする
+  C-x C-f .git/config
+
+	url = http://github.com/noriyosi/mytools.git
+           ↓
+	url = git@github.com:noriyosi/mytools.git
+
+  C-x C-f ~/.ssh/config
+---
+Host github.com
+    User git
+    Hostname ssh.github.com
+    Port 443
+    IdentityFile c:/docume~1/noriyosi/.ssh/id_rsa
+---
