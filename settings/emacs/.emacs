@@ -21,16 +21,22 @@
 
 (defvar my-repeater-command nil)
 (defvar my-repeater-prefix-arg nil)
+(defvar my-repeater-prev-key nil)
+(defvar my-repeater-ignore-command
+  '(execute-extended-command self-insert-command iswitchb-buffer))
 (defun my-repeater ()
   (setq my-repeater-command
-    	(when (and (not (and isearch-mode
+        (when (and (not (and isearch-mode
                              (equal isearch-string "")))
-                   real-last-command)
+                   my-repeater-prev-key
+                   (not (member last-command my-repeater-ignore-command)))
           (let* ((keys (recent-keys))
-                 (prev-key (my-keys-to-int (aref keys (- (length keys) 2))))
+                 (prev-key (my-keys-to-int my-repeater-prev-key))
+                 (real-prev-key (my-keys-to-int (aref keys (- (length keys) 2))))
                  (last-key (my-keys-to-int last-command-event))
                  (last-key-offset (- last-key ?a)))
             (when (and (< 0 prev-key)
+                       (eq prev-key real-prev-key)
                        (or (eq (- prev-key ?@) (- last-key ?@))
                            (eq (- prev-key ?\A-a) last-key-offset)
                            (eq (- prev-key ?\C-a) last-key-offset)
@@ -38,27 +44,28 @@
                            (eq (- prev-key ?\M-a) last-key-offset)
                            (eq (- prev-key ?\s-a) last-key-offset)
                            (eq (- prev-key ?\S-a) last-key-offset)))
-              (if my-repeater-command
-                  (progn
-                    (setq this-command my-repeater-command
-                          prefix-arg my-repeater-prefix-arg)
-                    my-repeater-command)
-            	(setq my-repeater-prefix-arg last-prefix-arg)
-            	(setq this-command real-last-command)
-            	(setq prefix-arg last-prefix-arg)
-            	real-last-command))))))
+              (cond (my-repeater-command
+                     (setq this-command my-repeater-command
+                           prefix-arg my-repeater-prefix-arg)
+                     my-repeater-command)
+                    (t
+                     (setq my-repeater-prefix-arg last-prefix-arg)
+                     (setq this-command real-last-command)
+                     (setq prefix-arg last-prefix-arg)
+                     real-last-command))))))
+  (setq my-repeater-prev-key last-command-event))
 
 (defun my-isearch-yank-symbol ()
   (interactive)
   (let ((sym (symbol-at-point)))
     (if sym
-   	(progn
+        (progn
           (setq isearch-regexp t
-           	isearch-string (concat "\\_<" (regexp-quote (symbol-name sym))
+                isearch-string (concat "\\_<" (regexp-quote (symbol-name sym))
                                        "\\_>")
-           	isearch-message (mapconcat 'isearch-text-char-description
+                isearch-message (mapconcat 'isearch-text-char-description
                                            isearch-string "")
-           	isearch-yank-flag t))
+                isearch-yank-flag t))
       (ding)))
   (isearch-search-and-update))
 
@@ -79,7 +86,7 @@
 (defun genpass ()
   (interactive)
   (let ((key1 (read-passwd "key1: "))
-   	(key2 (completing-read "key2 (google): "
+        (key2 (completing-read "key2 (google): "
                                '("google" "atspace" "apple" "microsoft"
                                  "amazon" "livedoor" "hatena" "j-west"
                                  "ps3" "skype" "prius" "github")
@@ -102,17 +109,17 @@
 (define-key isearch-mode-map (kbd "C-c o") 'isearch-occur)
 
 
-;;;;;; font
-(let ((fonts (cond ((eq window-system 'x) '("Inconsolata-13" "Takaoゴシック"))
-                   ((eq window-system 'w32) '("BPMono-11" "メイリオ")))))
-  (when fonts
-    (set-frame-font (car fonts))
-    (set-face-font 'variable-pitch (car fonts))
-    (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0208
-                      `(,(cadr fonts) . "unicode-bmp"))))
-
 ;;;; specific os setting
+;; Windows
+
+;; UnxUtils
+;;   http://sourceforge.net/projects/unxutils/files/unxutils/current/UnxUtils.zip/download
+;; UnxUpdates
+;;   ftp://ftp.fh-hannover.de/pandora/files/linux/UnxUpdates.zip
+;;   ftp://ftp.ufanet.ru/pub/windows/unixutils/UnxUpdates.zip
+;;   http://www.weihenstephan.de/~syring/win32/UnxUpdates.zip
+;; Git
+;;   http://code.google.com/p/msysgit/
 
 (cond ((eq window-system 'w32)
        (setq grep-find-ignored-files '(".#*" "*~" "*.exe" "*.doc" "*.xls" "*.pdf" "*.dll"))
@@ -139,31 +146,29 @@
 
 ;;;;; customize
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["black" "red" "green3" "yellow3" "blue" "magenta" "cyan3" "white"])
  '(eshell-ask-to-save-history (quote always))
  '(eshell-history-size 1000)
  '(eshell-ls-dired-initial-args (quote ("-h")))
  '(eshell-ls-exclude-regexp "~\\'")
  '(eshell-ls-initial-args "-h")
  '(eshell-ls-use-in-dired t nil (em-ls))
- '(eshell-modules-list (quote (eshell-alias eshell-basic
-                                            eshell-cmpl eshell-dirs eshell-glob
-                                            eshell-hist eshell-ls eshell-pred
-                                            eshell-prompt eshell-rebind
-                                            eshell-script eshell-smart
-                                            eshell-term eshell-unix eshell-xtra)))
+ '(eshell-modules-list (quote (eshell-alias eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-smart eshell-term eshell-unix eshell-xtra)))
  '(eshell-prefer-to-shell t nil (eshell))
  '(eshell-stringify-t nil)
  '(eshell-term-name "ansi")
- '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx"
-                                  "ssh" "rlogin" "telnet")))
+ '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx" "ssh" "rlogin" "telnet")))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol)))
  '(ido-mode (quote both) nil (ido))
+ '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(initial-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40) (tool-bar-lines . 0) (top . 0) (left . 0))))
+ '(iswitchb-delim " | ")
+ '(iswitchb-max-to-show 12)
  '(iswitchb-mode t)
  '(kill-whole-line t)
  '(line-spacing 2)
@@ -177,8 +182,44 @@
  '(which-function-mode t)
  '(x-select-enable-clipboard t))
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  )
+
+
+;;;;;; font
+
+;; Monaco
+;;   http://www.webdevkungfu.com/files/MONACO.TTF
+;; DejaVu Sans Mono
+;; Consolas
+;; Inconsolata-g
+;;   http://www.fantascienza.net/leonardo/ar/inconsolatag/inconsolata-g_font.zip
+
+(let ((fonts (cond ((eq window-system 'x) '("Inconsolata-13" "Takaoゴシック"))
+                   ((eq window-system 'w32) '("Inconsolata-g-11" "メイリオ")))))
+  (when fonts
+    (set-frame-font (car fonts))
+
+    ;; tool tip
+    ;;(set-face-font 'variable-pitch (car fonts))
+
+    ;; general japanese
+    (set-fontset-font (frame-parameter nil 'font)
+                      'japanese-jisx0208
+                      `(,(cadr fonts) . "unicode-bmp"))
+    ;; fullwidth tilde
+    (set-fontset-font (frame-parameter nil 'font)
+                      'japanese-jisx0212
+                      `(,(cadr fonts) . "unicode-bmp"))
+    ;; circle digit
+    (set-fontset-font (frame-parameter nil 'font)
+                      'japanese-jisx0213.2004-1
+                      `(,(cadr fonts) . "unicode-bmp"))
+    ;; halfwidth katakana
+    (set-fontset-font (frame-parameter nil 'font)
+                      'katakana-jisx0201
+                      `(,(cadr fonts) . "unicode-bmp"))))
+
