@@ -166,6 +166,7 @@
  '(ido-mode (quote both) nil (ido))
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
+ '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40) (tool-bar-lines . 0) (top . 0) (left . 0))))
  '(iswitchb-delim " | ")
  '(iswitchb-max-to-show 12)
