@@ -94,11 +94,11 @@
     (kill-new (substring (sha1 (concat (sha1 key1) key2)) 0 8))))
 
 ;;;;;; key-bind
-;; repeat
-(add-hook 'pre-command-hook 'my-repeater)
-(byte-compile 'my-repeater)
+;;;; repeat
+;;(add-hook 'pre-command-hook 'my-repeater)
+;;(byte-compile 'my-repeater)
 
-;; useful function
+;;;; useful function
 (define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
@@ -109,7 +109,7 @@
 (define-key isearch-mode-map (kbd "C-c o") 'isearch-occur)
 
 
-;;;; specific os setting
+;;;;;; specific os setting
 ;; Windows
 
 ;; UnxUtils
@@ -125,7 +125,7 @@
        (setq grep-find-ignored-files '(".#*" "*~" "*.exe" "*.doc" "*.xls" "*.pdf" "*.dll"))
        ))
 
-;;;; mode setting
+;;;;;; mode setting
 (defun my-c-setting ()
   (setq indent-tabs-mode t)
   (setq tab-width 4)
@@ -144,7 +144,7 @@
 (add-hook 'c-mode-hook 'my-c-setting)
 (add-hook 'java-mode-hook 'my-java-setting)
 
-;;;;; customize
+;;;;;; customize
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
