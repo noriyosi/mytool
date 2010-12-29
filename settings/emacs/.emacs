@@ -179,6 +179,7 @@
  '(read-file-name-completion-ignore-case t)
  '(set-mark-command-repeat-pop t)
  '(show-paren-mode t)
+ '(show-trailing-whitespace t)
  '(which-func-modes (quote (emacs-lisp-mode c-mode c++-mode perl-mode cperl-mode python-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode diff-mode java-mode)))
  '(which-function-mode t)
  '(x-select-enable-clipboard t))
@@ -187,6 +188,9 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:foreground "blue"))))
+ '(diff-removed ((t (:foreground "red"))))
+ '(trailing-whitespace ((((class color) (background light)) (:background "linen"))))
  )
 
 
