@@ -1,4 +1,4 @@
-;;;;;; for emacs22
+;; For emacs22 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (< emacs-major-version 23)
   ;; setting
   (transient-mark-mode 1)
@@ -15,7 +15,11 @@
   (define-key isearch-mode-map (kbd "M-s o") 'isearch-occur)
   )
 
-;;;;;; functions
+;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-add-exec-path (path)
+  (setenv "PATH" (concat path path-separator (getenv "PATH")))
+  (add-to-list 'exec-path path))
+
 (defun my-keys-to-int (key)
   (if (integerp key) key -1))
 
@@ -93,39 +97,49 @@
                                nil nil "" "" "google" nil)))
     (kill-new (substring (sha1 (concat (sha1 key1) key2)) 0 8))))
 
-;;;;;; key-bind
+(defun my-dired-start ()
+  (interactive)
+  (cond ((eq window-system 'w32)
+         (w32-shell-execute "open" (dired-get-filename)))
+        ((eq window-system 'ns)
+         (shell-command (concat "open " "\"" (dired-get-filename) "\"")))))
+
+;; Programable setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(server-start)
+(add-to-list 'load-path "~/elisp")
+
+;; Dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'dired-load-hook
+          (lambda () (load "dired-x")))
+(autoload 'wdired-change-to-wdired-mode "wdired")
+
+;; Etc ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(autoload 'magit-status "magit" "" t)
+
+
+;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; repeat
 ;;(add-hook 'pre-command-hook 'my-repeater)
 ;;(byte-compile 'my-repeater)
 
-;;;; useful function
+;;;; Useful function
 (define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
 (global-set-key (kbd "TAB") 'my-auto-hippie-expand)
 
+;;;; Isearch
 (when (eq (lookup-key isearch-mode-map (kbd "C-c")) 'isearch-other-control-char)
   (define-key isearch-mode-map (kbd "C-c") (make-sparse-keymap)))
 (define-key isearch-mode-map (kbd "C-c o") 'isearch-occur)
 
+;;;; Dired
+(add-hook 'dired-load-hook
+	  (lambda ()
+	    (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
+	    (define-key dired-mode-map "z" 'my-dired-start)))
 
-;;;;;; specific os setting
-;; Windows
-
-;; UnxUtils
-;;   http://sourceforge.net/projects/unxutils/files/unxutils/current/UnxUtils.zip/download
-;; UnxUpdates
-;;   ftp://ftp.fh-hannover.de/pandora/files/linux/UnxUpdates.zip
-;;   ftp://ftp.ufanet.ru/pub/windows/unixutils/UnxUpdates.zip
-;;   http://www.weihenstephan.de/~syring/win32/UnxUpdates.zip
-;; Git
-;;   http://code.google.com/p/msysgit/
-
-(cond ((eq window-system 'w32)
-       (setq grep-find-ignored-files '(".#*" "*~" "*.exe" "*.doc" "*.xls" "*.pdf" "*.dll"))
-       ))
-
-;;;;;; mode setting
+;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
   (setq indent-tabs-mode t)
   (setq tab-width 4)
@@ -144,13 +158,39 @@
 (add-hook 'c-mode-hook 'my-c-setting)
 (add-hook 'java-mode-hook 'my-java-setting)
 
-;;;;;; customize
+;; Specific os setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Windows
+
+;; UnxUtils
+;;   http://sourceforge.net/projects/unxutils/files/unxutils/current/UnxUtils.zip/download
+;; UnxUpdates
+;;   ftp://ftp.fh-hannover.de/pandora/files/linux/UnxUpdates.zip
+;;   ftp://ftp.ufanet.ru/pub/windows/unixutils/UnxUpdates.zip
+;;   http://www.weihenstephan.de/~syring/win32/UnxUpdates.zip
+;; Git
+;;   http://code.google.com/p/msysgit/
+
+(cond ((eq window-system 'w32)
+       (setq grep-find-ignored-files '(".#*" "*~" "*.exe" "*.doc" "*.xls" "*.pdf" "*.dll")))
+      ((eq window-system 'ns)
+       (my-add-exec-path "/opt/local/bin")
+       ;; (setq xargs-program "gxargs")
+       ;; (set-default-coding-systems 'utf-8-unix)
+       ;; (set-clipboard-coding-system 'utf-8)
+       ;; (set-keyboard-coding-system 'utf-8)
+       ;; (set-terminal-coding-system 'utf-8)
+       ;; (prefer-coding-system 'utf-8-unix)
+       ))
+
+;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["black" "red" "green3" "yellow3" "blue" "magenta" "cyan3" "white"])
+ '(dired-recursive-copies (quote always))
+ '(dired-recursive-deletes (quote always))
  '(eshell-ask-to-save-history (quote always))
  '(eshell-history-size 1000)
  '(eshell-ls-dired-initial-args (quote ("-h")))
@@ -163,7 +203,8 @@
  '(eshell-term-name "ansi")
  '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx" "ssh" "rlogin" "telnet")))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol)))
- '(ido-mode (quote both) nil (ido))
+ '(icomplete-mode t)
+;; '(ido-mode (quote both) nil (ido))
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
@@ -177,9 +218,15 @@
  '(ns-command-modifier (quote meta))
  '(partial-completion-mode t)
  '(read-file-name-completion-ignore-case t)
+ '(recentf-mode t)
+ '(save-place t nil (saveplace))
  '(set-mark-command-repeat-pop t)
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
+ '(skk-egg-like-newline t)
+ '(skk-sticky-key ";")
+ '(view-read-only t)
+ '(visible-bell t)
  '(which-func-modes (quote (emacs-lisp-mode c-mode c++-mode perl-mode cperl-mode python-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode diff-mode java-mode)))
  '(which-function-mode t)
  '(x-select-enable-clipboard t))
@@ -193,8 +240,7 @@
  '(trailing-whitespace ((((class color) (background light)) (:background "linen"))))
  )
 
-
-;;;;;; font
+;; Font ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Monaco
 ;;   http://www.webdevkungfu.com/files/MONACO.TTF
@@ -204,7 +250,8 @@
 ;;   http://www.fantascienza.net/leonardo/ar/inconsolatag/inconsolata-g_font.zip
 
 (let ((fonts (cond ((eq window-system 'x) '("Inconsolata-13" "Takaoゴシック"))
-                   ((eq window-system 'w32) '("Inconsolata-g-11" "メイリオ")))))
+                   ((eq window-system 'w32) '("Inconsolata-g-11" "メイリオ"))
+                   ((eq window-system 'ns) '("Monaco" "ヒラギノ丸ゴ Pro")))))
   (when fonts
     (set-frame-font (car fonts))
 
