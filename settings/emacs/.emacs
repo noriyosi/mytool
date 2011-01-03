@@ -17,8 +17,9 @@
 
 ;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-add-exec-path (path)
-  (setenv "PATH" (concat path path-separator (getenv "PATH")))
-  (add-to-list 'exec-path path))
+  (let ((expanded-path (expand-file-name path)))
+    (setenv "PATH" (concat expanded-path path-separator (getenv "PATH")))
+    (add-to-list 'exec-path expanded-path)))
 
 (defun my-keys-to-int (key)
   (if (integerp key) key -1))
@@ -104,9 +105,60 @@
         ((eq window-system 'ns)
          (shell-command (concat "open " "\"" (dired-get-filename) "\"")))))
 
+;; http://www.emacswiki.org/cgi-bin/wiki/ImenuMode#toc10
+(defun ido-goto-symbol (&optional symbol-list)
+  "Refresh imenu and jump to a place in the buffer using Ido."
+  (interactive)
+  (unless (featurep 'imenu)
+    (require 'imenu nil t))
+  (cond
+   ((not symbol-list)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          name-and-pos symbol-names position)
+      (unless ido-mode
+        (ido-mode 1)
+        (setq ido-enable-flex-matching t))
+      (while (progn
+               (imenu--cleanup)
+               (setq imenu--index-alist nil)
+               (ido-goto-symbol (imenu--make-index-alist))
+               (setq selected-symbol
+                     (ido-completing-read "Symbol? " symbol-names))
+               (string= (car imenu--rescan-item) selected-symbol)))
+      (unless (and (boundp 'mark-active) mark-active)
+        (push-mark nil t nil))
+      (setq position (cdr (assoc selected-symbol name-and-pos)))
+      (cond
+       ((overlayp position)
+        (goto-char (overlay-start position)))
+       (t
+        (goto-char position)))))
+   ((listp symbol-list)
+    (dolist (symbol symbol-list)
+      (let (name position)
+        (cond
+         ((and (listp symbol) (imenu--subalist-p symbol))
+          (ido-goto-symbol symbol))
+         ((listp symbol)
+          (setq name (car symbol))
+          (setq position (cdr symbol)))
+         ((stringp symbol)
+          (setq name symbol)
+          (setq position
+                (get-text-property 1 'org-imenu-marker symbol))))
+        (unless (or (null position) (null name)
+                    (string= (car imenu--rescan-item) name))
+          (add-to-list 'symbol-names name)
+          (add-to-list 'name-and-pos (cons name position))))))))
+
 ;; Programable setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (server-start)
 (add-to-list 'load-path "~/elisp")
+
+;;(my-add-exec-path "~/apps/UnxUtils/usr/local/wbin")
 
 ;; Dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'dired-load-hook
@@ -127,6 +179,7 @@
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
 (global-set-key (kbd "TAB") 'my-auto-hippie-expand)
+(global-set-key (kbd "C-c i") 'ido-goto-symbol)
 
 ;;;; Isearch
 (when (eq (lookup-key isearch-mode-map (kbd "C-c")) 'isearch-other-control-char)
@@ -204,7 +257,7 @@
  '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx" "ssh" "rlogin" "telnet")))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol)))
  '(icomplete-mode t)
-;; '(ido-mode (quote both) nil (ido))
+ '(ido-mode (quote both) nil (ido))
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
