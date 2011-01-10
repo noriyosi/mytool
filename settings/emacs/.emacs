@@ -94,14 +94,6 @@
       (kill-region (point) (mark))
     (backward-kill-word arg)))
 
-(defun my-auto-hippie-expand (&optional arg)
-  (interactive)
-  (if (or (bolp)
-          (use-region-p)
-          (string-match "[^a-zA-Z0-9-_/]" (string (char-before))))
-      (indent-for-tab-command arg)
-    (hippie-expand arg)))
-
 (defun genpass ()
   (interactive)
   (let ((key1 (read-passwd "key1: "))
@@ -186,9 +178,25 @@
           (lambda () (load "dired-x")))
 (autoload 'wdired-change-to-wdired-mode "wdired")
 
-;; Etc ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; magit
 (autoload 'magit-status "magit" "" t)
 
+;;;; auto-install
+(when (require 'auto-install nil t)
+  (add-to-list 'load-path auto-install-directory))
+
+;;;; hippie-expand-tab
+(require 'hippie-exp-tab nil t)
+
+;;;; japanese-holidays
+;;;; (http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el)
+(add-hook 'calendar-load-hook
+          (lambda ()
+            (when (require 'japanese-holidays nil t)
+              (setq calendar-holidays
+                    (append japanese-holidays local-holidays other-holidays))
+              (setq mark-holidays-in-calendar t))))
 
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
@@ -200,9 +208,8 @@
 
 ;;;; Useful function
 (define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
-(global-set-key (kbd "C-c C-m") 'execute-extended-command)
+(global-set-key (kbd "C-c m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
-(global-set-key (kbd "TAB") 'my-auto-hippie-expand)
 (global-set-key (kbd "C-c i") 'ido-goto-symbol)
 
 ;;;; Isearch
