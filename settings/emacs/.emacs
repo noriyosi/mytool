@@ -269,6 +269,7 @@
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote always))
  '(eshell-ask-to-save-history (quote always))
+ '(eshell-cmpl-ignore-case t)
  '(eshell-history-size 1000)
  '(eshell-ls-dired-initial-args (quote ("-h")))
  '(eshell-ls-exclude-regexp "~\\'")
@@ -314,8 +315,7 @@
   ;; If there is more than one, they won't work right.
  '(diff-added ((t (:foreground "blue"))))
  '(diff-removed ((t (:foreground "red"))))
- '(trailing-whitespace ((((class color) (background light)) (:background "linen"))))
- )
+ '(trailing-whitespace ((((class color) (background light)) (:background "linen")))))
 
 ;; Font ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -345,7 +345,7 @@
                       `(,(cadr fonts) . "unicode-bmp"))
     ;; circle digit
     (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0213.2004-1
+                      'japanese-jisx0213-1
                       `(,(cadr fonts) . "unicode-bmp"))
     ;; halfwidth katakana
     (set-fontset-font (frame-parameter nil 'font)
