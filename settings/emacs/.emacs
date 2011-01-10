@@ -60,6 +60,20 @@
                      real-last-command))))))
   (setq my-repeater-prev-key last-command-event))
 
+(setq my-repeatable-command
+  '(scroll-up scroll-down isearch-repeat-forward isearch-repeat-backward undo))
+
+(defun my-repeat-or-period (N)
+  (interactive "p")
+  (if (member last-command my-repeatable-command)
+      (let ((repeat-on-final-keystroke t)
+            ;;(repeat-message-function 'ignore)
+            )
+        (repeat last-prefix-arg))
+    (if isearch-mode
+        (isearch-printing-char)
+      (self-insert-command N))))
+
 (defun my-isearch-yank-symbol ()
   (interactive)
   (let ((sym (symbol-at-point)))
@@ -170,9 +184,12 @@
 
 
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; repeat
+;;;; Repeat
+
 ;;(add-hook 'pre-command-hook 'my-repeater)
 ;;(byte-compile 'my-repeater)
+(global-set-key "." 'my-repeat-or-period)
+(define-key isearch-mode-map "." 'my-repeat-or-period)
 
 ;;;; Useful function
 (define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
