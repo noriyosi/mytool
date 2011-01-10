@@ -168,9 +168,16 @@
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))
 
+
 ;; Programable setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (server-start)
-(add-to-list 'load-path "~/elisp")
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+
+;;;; chrome
+(let ((chrome-bin "/usr/bin/google-chrome"))
+  (when (file-exists-p chrome-bin)
+    (setq browse-url-browser-function 'browse-url-generic)
+    (setq browse-url-generic-program chrome-bin)))
 
 ;;(my-add-exec-path "~/apps/UnxUtils/usr/local/wbin")
 
