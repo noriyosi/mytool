@@ -7,6 +7,7 @@
   "The face of 'hippie-expand' completion.")
 
 (defvar hetab-overlay (make-overlay 0 0 nil t t))
+(delete-overlay hetab-overlay)
 (defvar hetab-face 'hetab-face)
 (defvar hetab-not-found nil)
 (defvar hetab-timer nil)
@@ -52,7 +53,6 @@
                                                          (- he-string-end
                                                             he-string-beg))
                                               'face hetab-face)))
-            (setq hetab-marker (point-marker))
             (let ((buffer-undo-list t))
               (insert " "))
             (backward-char)
@@ -65,25 +65,21 @@
         (setq hetab-not-found t)))))
 
 (defun hetab-set-timer ()
-  (when hetab-timer
-    (cancel-timer hetab-timer)
-    (setq hetab-timer nil))
-  (when hetab-marker
-    (with-current-buffer (marker-buffer hetab-marker)
-      (save-excursion
-        (goto-char hetab-marker)
-        (let ((buffer-undo-list t))
-          (delete-char 1))))
-    (setq hetab-marker nil)
-    (delete-overlay hetab-overlay))
-  (setq hetab-not-found nil)
-  (if (and (eq this-command 'self-insert-command)
-           (eolp)
-           (not (eq last-command-event ? )))
-      (setq hetab-timer (run-with-idle-timer hetab-delay-time nil 'hetab-show-phantom))
-    (setq hetab-not-found nil)))
+  (unless buffer-read-only
+    (when hetab-timer
+      (cancel-timer hetab-timer)
+      (setq hetab-timer nil))
+    (when (overlay-buffer hetab-overlay)
+      (let ((buffer-undo-list t))
+        (delete-char 1))
+      (delete-overlay hetab-overlay))
+    (setq hetab-not-found nil)
+    (if (and (eq this-command 'self-insert-command)
+             (eolp)
+             (not (eq last-command-event ? )))
+        (setq hetab-timer (run-with-idle-timer hetab-delay-time nil 'hetab-show-phantom))
+      (setq hetab-not-found nil))))
 
 (global-set-key hetab-key 'hetab-handle-tab)
 (add-hook 'pre-command-hook 'hetab-set-timer)
-
 (provide 'hippie-exp-tab)
