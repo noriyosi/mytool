@@ -12,7 +12,6 @@
 (defvar hetab-not-found nil)
 (defvar hetab-timer nil)
 (defvar hetab-delay-time 0.2)
-(defvar hetab-marker nil)
 (defvar hetab-key (kbd "TAB"))
 
 (defun hetab-handle-tab (&optional arg)
@@ -24,7 +23,6 @@
 (defun hetab-disable-p ()
   (or (use-region-p)
       (string-match "[ \t\n]" (string (char-before)))
-      ;;(not (string-match "[ \t\n]" (string (char-after))))
       (minibufferp (current-buffer))))
 
 (defun hetab-get-completion ()
@@ -45,24 +43,18 @@
 
 (defun hetab-show-phantom ()
   (when (and (eq (key-binding hetab-key) 'hetab-handle-tab)
-             (not hetab-not-found)
-             (not (hetab-disable-p)))
+             (not (or hetab-not-found
+                      (hetab-disable-p))))
     (let ((expand-string (hetab-get-completion)))
-      (if expand-string
-          (let ((string-with-face (propertize (substring expand-string
-                                                         (- he-string-end
-                                                            he-string-beg))
-                                              'face hetab-face)))
-            (let ((buffer-undo-list t))
-              (insert " "))
-            (backward-char)
-            ;; (let ((end (save-excursion (move-end-of-line 1) (point))))
-            ;;   (move-overlay hetab-overlay he-string-end
-            ;;                 (min end (+ he-string-end (length string-with-face) 1))))
-            (move-overlay hetab-overlay he-string-end (1+ he-string-end))
-            (overlay-put hetab-overlay 'display (substring string-with-face 0 1))
-            (overlay-put hetab-overlay 'after-string (substring string-with-face 1)))
-        (setq hetab-not-found t)))))
+      (if (not expand-string)
+          (setq hetab-not-found (not (eq (marker-position he-string-beg) (point))))
+        (let ((buffer-undo-list t))
+          (save-excursion (insert "@")))
+        (move-overlay hetab-overlay (point) (1+ (point)))
+        (overlay-put hetab-overlay 'display
+                     (propertize (substring expand-string
+                                            (- he-string-end he-string-beg))
+                                 'face hetab-face))))))
 
 (defun hetab-set-timer ()
   (unless buffer-read-only
@@ -73,7 +65,6 @@
       (let ((buffer-undo-list t))
         (delete-char 1))
       (delete-overlay hetab-overlay))
-    (setq hetab-not-found nil)
     (if (and (eq this-command 'self-insert-command)
              (eolp)
              (not (eq last-command-event ? )))
