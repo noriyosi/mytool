@@ -178,6 +178,14 @@
           (lambda () (load "dired-x")))
 (autoload 'wdired-change-to-wdired-mode "wdired")
 
+;; Eshell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(autoload 'ansi-color-apply "ansi-color")
+(defun my-eshell-init ()
+  ;; for git
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "xterm-256color"))
+(add-hook 'eshell-mode-hook 'my-eshell-init)
+
 ;; Plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; magit
 (autoload 'magit-status "magit" "" t)
@@ -284,12 +292,13 @@
  '(eshell-ls-use-in-dired t nil (em-ls))
  '(eshell-modules-list (quote (eshell-alias eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-smart eshell-term eshell-unix eshell-xtra)))
  '(eshell-prefer-to-shell t nil (eshell))
+ '(eshell-preoutput-filter-functions (quote (ansi-color-apply)))
  '(eshell-stringify-t nil)
  '(eshell-term-name "ansi")
  '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx" "ssh" "rlogin" "telnet")))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol)))
  '(icomplete-mode t)
- '(ido-mode (quote both) nil (ido))
+;; '(ido-mode (quote both) nil (ido))
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
