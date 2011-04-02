@@ -262,9 +262,47 @@
 ;; Git
 ;;   http://code.google.com/p/msysgit/
 
-(cond ((eq window-system 'w32)
-       (setq grep-find-ignored-files '(".#*" "*~" "*.exe" "*.doc" "*.xls" "*.pdf" "*.dll")))
-      ((eq window-system 'ns)
+(cond ((eq 'windows-nt system-type)
+       ;; Git settings.
+       (let* ((msysgit-root "c:/my/apps/PortableGit-1.7.4-preview20110204")
+              (msysgit-bin (concat msysgit-root "/bin")))
+         (when (file-readable-p msysgit-root)
+           (my-add-exec-path msysgit-bin)))
+
+       ;; IME settings.
+       (when (functionp 'w32-ime-initialize)
+         (setq default-input-method "W32-IME")
+         (setq-default w32-ime-mode-line-state-indicator "[Aa]")
+         (setq w32-ime-mode-line-state-indicator-list '("[Aa]" "[ON]" "[Aa]"))
+         (w32-ime-initialize))
+
+       ;; Cygwin settings.
+       (let* ((cygwin-root "c:/my/apps/cygwin")
+              (cygwin-bin (concat cygwin-root "/bin")))
+         (when (file-readable-p cygwin-root)
+           (my-add-exec-path cygwin-bin)
+
+           ;; Bash settings.
+           (setq shell-file-name (executable-find "bash"))
+           (setenv "SHELL" shell-file-name)
+           (setq explicit-shell-file-name shell-file-name)
+
+           ;; This removes unsightly ^M characters that would otherwise
+           ;; appear in the output of java applications.
+           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+
+       ;; Turns off MS-DOS style path warning.
+       (setenv "CYGWIN" (concat (getenv "CYGWIN") " nodosfilewarning"))
+
+       ;; Prevent issues with the Windows null device (NUL)
+       ;; when using cygwin find with rgrep.
+       (defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+         "Use cygwin's /dev/null as the null-device."
+         (let ((null-device "/dev/null"))
+           ad-do-it))
+       (ad-activate 'grep-compute-defaults))
+
+      ((eq 'darwin system-type)
        (my-add-exec-path "/opt/local/bin")
        ;; (setq xargs-program "gxargs")
        ;; (set-default-coding-systems 'utf-8-unix)
