@@ -304,6 +304,11 @@
 
       ((eq 'darwin system-type)
        (my-add-exec-path "/opt/local/bin")
+       (define-key key-translation-map "¥" "\\")
+       (define-key key-translation-map (kbd "C-¥") (kbd "C-\\"))
+       (define-key key-translation-map (kbd "M-¥") (kbd "M-\\"))
+       (define-key key-translation-map (kbd "C-M-¥") (kbd "C-M-\\"))
+       (setq locate-command "mdfind")
        ;; (setq xargs-program "gxargs")
        ;; (set-default-coding-systems 'utf-8-unix)
        ;; (set-clipboard-coding-system 'utf-8)
