@@ -206,6 +206,10 @@
                     (append japanese-holidays local-holidays other-holidays))
               (setq mark-holidays-in-calendar t))))
 
+;;;; japanese-coding-settings
+;;;; (http://nijino.homelinux.net/emacs/emacs23-ja.html)
+(require 'japanese-coding-settings)
+
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
 
