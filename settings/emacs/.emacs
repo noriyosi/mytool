@@ -1,3 +1,5 @@
+;; -*- coding: utf-8-unix; -*-
+
 ;; For emacs22 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (< emacs-major-version 23)
   ;; setting
@@ -268,9 +270,9 @@
 
 (cond ((eq 'windows-nt system-type)
        ;; Git settings.
-       (let* ((msysgit-root "c:/my/apps/PortableGit-1.7.4-preview20110204")
+       (let* ((msysgit-root (getenv "MSYSGIT_ROOT"))
               (msysgit-bin (concat msysgit-root "/bin")))
-         (when (file-readable-p msysgit-root)
+         (when (file-readable-p msysgit-bin)
            (my-add-exec-path msysgit-bin)))
 
        ;; IME settings.
@@ -281,7 +283,7 @@
          (w32-ime-initialize))
 
        ;; Cygwin settings.
-       (let* ((cygwin-root "c:/my/apps/cygwin")
+       (let* ((cygwin-root "c:/cygwin")
               (cygwin-bin (concat cygwin-root "/bin")))
          (when (file-readable-p cygwin-root)
            (my-add-exec-path cygwin-bin)
@@ -293,7 +295,11 @@
 
            ;; This removes unsightly ^M characters that would otherwise
            ;; appear in the output of java applications.
-           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+
+           (setq cygwin-mount-cygwin-bin-directory cygwin-bin)
+           (require 'setup-cygwin)
+           ))
 
        ;; Turns off MS-DOS style path warning.
        (setenv "CYGWIN" (concat (getenv "CYGWIN") " nodosfilewarning"))
@@ -336,7 +342,7 @@
  '(eshell-ls-dired-initial-args (quote ("-h")))
  '(eshell-ls-exclude-regexp "~\\'")
  '(eshell-ls-initial-args "-h")
- '(eshell-ls-use-in-dired t nil (em-ls))
+;; '(eshell-ls-use-in-dired t nil (em-ls))
  '(eshell-modules-list (quote (eshell-alias eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-smart eshell-term eshell-unix eshell-xtra)))
  '(eshell-prefer-to-shell t nil (eshell))
  '(eshell-preoutput-filter-functions (quote (ansi-color-apply)))
@@ -349,7 +355,8 @@
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
- '(initial-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40) (tool-bar-lines . 0) (top . 0) (left . 0))))
+ '(initial-frame-alist (quote ((menu-bar-lines . 0) (top . 0) (left . 0) (height . 40))))
+ '(default-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40))))
  '(iswitchb-delim " | ")
  '(iswitchb-max-to-show 12)
  '(iswitchb-mode t)
@@ -359,6 +366,8 @@
  '(ns-command-modifier (quote meta))
  '(partial-completion-mode t)
  '(read-file-name-completion-ignore-case t)
+ '(recentf-auto-cleanup (quote never))
+ '(recentf-max-saved-items 1000)
  '(recentf-mode t)
  '(save-place t nil (saveplace))
  '(set-mark-command-repeat-pop t)
@@ -394,24 +403,16 @@
                    ((eq window-system 'ns) '("Monaco" "ヒラギノ丸ゴ Pro")))))
   (when fonts
     (set-frame-font (car fonts))
+    (add-to-list 'default-frame-alist (cons 'font (car fonts)))
 
-    ;; tool tip
-    ;;(set-face-font 'variable-pitch (car fonts))
-
-    ;; general japanese
-    (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0208
-                      `(,(cadr fonts) . "unicode-bmp"))
-    ;; fullwidth tilde
-    (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0212
-                      `(,(cadr fonts) . "unicode-bmp"))
-    ;; circle digit
-    (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0213-1
-                      `(,(cadr fonts) . "unicode-bmp"))
-    ;; halfwidth katakana
-    (set-fontset-font (frame-parameter nil 'font)
-                      'katakana-jisx0201
-                      `(,(cadr fonts) . "unicode-bmp"))))
-
+    (let ((targets '(
+                     japanese-jisx0208   ;japanese
+                     japanese-jisx0212   ;fullwidth tilde
+                     japanese-jisx0213-1 ;circle digit
+                     katakana-jisx0201   ;halfwidth katakana
+                     ))
+          (font-jp (cadr fonts)))
+      (mapcar (lambda (target)
+                (set-fontset-font nil target (font-spec :family font-jp)))
+              targets))
+    ))
