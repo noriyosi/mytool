@@ -106,13 +106,6 @@
                                nil nil "" "" "google" nil)))
     (kill-new (substring (sha1 (concat (sha1 key1) key2)) 0 8))))
 
-(defun my-dired-start ()
-  (interactive)
-  (cond ((eq window-system 'w32)
-         (w32-shell-execute "open" (dired-get-filename)))
-        ((eq window-system 'ns)
-         (shell-command (concat "open " "\"" (dired-get-filename) "\"")))))
-
 ;; http://www.emacswiki.org/cgi-bin/wiki/ImenuMode#toc10
 (defun ido-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
@@ -234,8 +227,9 @@
 ;;;; Dired
 (add-hook 'dired-load-hook
 	  (lambda ()
-	    (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-	    (define-key dired-mode-map "z" 'my-dired-start)))
+	    (define-key dired-mode-map (kbd "C-c r") 'wdired-change-to-wdired-mode)
+            (define-key dired-mode-map (kbd "C-c e") 'my-dired-explore)
+            (define-key dired-mode-map (kbd "C-c C-c") 'my-dired-open-file)))
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
@@ -310,7 +304,19 @@
          "Use cygwin's /dev/null as the null-device."
          (let ((null-device "/dev/null"))
            ad-do-it))
-       (ad-activate 'grep-compute-defaults))
+       (ad-activate 'grep-compute-defaults)
+
+
+       ;; Dired setting. Open file and expolorer.
+       (defun my-dired-explore ()
+	 (interactive)
+	 (w32-shell-execute "open" "explorer"
+			    (concat "/e,/select," (dired-get-filename "no-dir" t))))
+
+       (defun my-dired-open-file ()
+	 (interactive)
+	 (w32-shell-execute nil (dired-get-filename nil t)))
+       )
 
       ((eq 'darwin system-type)
        (my-add-exec-path "/opt/local/bin")
@@ -325,6 +331,11 @@
        ;; (set-keyboard-coding-system 'utf-8)
        ;; (set-terminal-coding-system 'utf-8)
        ;; (prefer-coding-system 'utf-8-unix)
+
+       ;; Dired setting.
+       (defun my-dired-open-file ()
+	 (interactive)
+         (shell-command (concat "open " "\"" (dired-get-filename) "\"")))
        ))
 
 ;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
