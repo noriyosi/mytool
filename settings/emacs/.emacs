@@ -183,7 +183,7 @@
 
 ;;;; japanese-coding-settings
 ;;;; (http://nijino.homelinux.net/emacs/emacs23-ja.html)
-(require 'japanese-coding-settings)
+(require 'japanese-coding-settings nil t)
 
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
