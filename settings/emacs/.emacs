@@ -23,45 +23,6 @@
     (setenv "PATH" (concat expanded-path path-separator (getenv "PATH")))
     (add-to-list 'exec-path expanded-path)))
 
-(defun my-keys-to-int (key)
-  (if (integerp key) key -1))
-
-(defvar my-repeater-command nil)
-(defvar my-repeater-prefix-arg nil)
-(defvar my-repeater-prev-key nil)
-(defvar my-repeater-ignore-command
-  '(execute-extended-command self-insert-command iswitchb-buffer))
-(defun my-repeater ()
-  (setq my-repeater-command
-        (when (and (not (and isearch-mode
-                             (equal isearch-string "")))
-                   my-repeater-prev-key
-                   (not (member last-command my-repeater-ignore-command)))
-          (let* ((keys (recent-keys))
-                 (prev-key (my-keys-to-int my-repeater-prev-key))
-                 (real-prev-key (my-keys-to-int (aref keys (- (length keys) 2))))
-                 (last-key (my-keys-to-int last-command-event))
-                 (last-key-offset (- last-key ?a)))
-            (when (and (< 0 prev-key)
-                       (eq prev-key real-prev-key)
-                       (or (eq (- prev-key ?@) (- last-key ?@))
-                           (eq (- prev-key ?\A-a) last-key-offset)
-                           (eq (- prev-key ?\C-a) last-key-offset)
-                           (eq (- prev-key ?\H-a) last-key-offset)
-                           (eq (- prev-key ?\M-a) last-key-offset)
-                           (eq (- prev-key ?\s-a) last-key-offset)
-                           (eq (- prev-key ?\S-a) last-key-offset)))
-              (cond (my-repeater-command
-                     (setq this-command my-repeater-command
-                           prefix-arg my-repeater-prefix-arg)
-                     my-repeater-command)
-                    (t
-                     (setq my-repeater-prefix-arg last-prefix-arg)
-                     (setq this-command real-last-command)
-                     (setq prefix-arg last-prefix-arg)
-                     real-last-command))))))
-  (setq my-repeater-prev-key last-command-event))
-
 (setq my-repeatable-command
   '(scroll-up scroll-down isearch-repeat-forward isearch-repeat-backward undo))
 
@@ -207,9 +168,6 @@
 
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
-
-;;(add-hook 'pre-command-hook 'my-repeater)
-;;(byte-compile 'my-repeater)
 (global-set-key "." 'my-repeat-or-period)
 (define-key isearch-mode-map "." 'my-repeat-or-period)
 
