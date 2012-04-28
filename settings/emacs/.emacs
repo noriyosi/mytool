@@ -24,7 +24,13 @@
     (add-to-list 'exec-path expanded-path)))
 
 (setq my-repeatable-command
-  '(scroll-up scroll-down isearch-repeat-forward isearch-repeat-backward undo))
+  '(scroll-up
+    scroll-down
+    scroll-up-command
+    scroll-down-command
+    isearch-repeat-forward
+    isearch-repeat-backward
+    undo))
 
 (defun my-repeat-or-period (N)
   (interactive "p")
