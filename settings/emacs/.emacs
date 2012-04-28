@@ -188,10 +188,8 @@
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
 (global-set-key "." 'my-repeat-or-period)
-(define-key isearch-mode-map "." 'my-repeat-or-period)
 
 ;;;; Useful function
-(define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
 (global-set-key (kbd "C-c m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
 (global-set-key (kbd "C-c i") 'ido-goto-symbol)
@@ -200,6 +198,8 @@
 (when (eq (lookup-key isearch-mode-map (kbd "C-c")) 'isearch-other-control-char)
   (define-key isearch-mode-map (kbd "C-c") (make-sparse-keymap)))
 (define-key isearch-mode-map (kbd "C-c o") 'isearch-occur)
+(define-key isearch-mode-map (kbd "C-l") 'my-isearch-yank-symbol)
+(define-key isearch-mode-map "." 'my-repeat-or-period)
 
 ;;;; Dired
 (add-hook 'dired-load-hook
@@ -209,6 +209,12 @@
             (define-key dired-mode-map (kbd "C-c f") 'my-dired-get-file-path)
             (define-key dired-mode-map (kbd "C-c d") 'my-dired-get-dir-path)
             (define-key dired-mode-map (kbd "C-c C-c") 'my-dired-open-file)))
+
+;;;; Org-mode
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;;;; Anything
+(global-set-key (kbd "C-c n") 'anything)
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
