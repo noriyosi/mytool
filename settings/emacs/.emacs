@@ -140,6 +140,19 @@
           (lambda () (load "dired-x")))
 (autoload 'wdired-change-to-wdired-mode "wdired")
 
+(defun my-replace-path (path)
+  (if (eq system-type 'windows-nt)
+      (dired-replace-in-string "/" "\\" path)
+    path))
+
+(defun my-dired-get-file-path ()
+  (interactive)
+  (kill-new (my-replace-path (dired-get-filename nil t))))
+
+(defun my-dired-get-dir-path ()
+  (interactive)
+  (kill-new (my-replace-path (dired-current-directory))))
+
 ;; Eshell ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (autoload 'ansi-color-apply "ansi-color")
 (defun my-eshell-init ()
@@ -193,6 +206,8 @@
 	  (lambda ()
 	    (define-key dired-mode-map (kbd "C-c r") 'wdired-change-to-wdired-mode)
             (define-key dired-mode-map (kbd "C-c e") 'my-dired-explore)
+            (define-key dired-mode-map (kbd "C-c f") 'my-dired-get-file-path)
+            (define-key dired-mode-map (kbd "C-c d") 'my-dired-get-dir-path)
             (define-key dired-mode-map (kbd "C-c C-c") 'my-dired-open-file)))
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
