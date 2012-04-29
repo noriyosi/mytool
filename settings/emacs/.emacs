@@ -172,6 +172,9 @@
 ;;;; hippie-expand-tab
 (require 'hippie-exp-tab nil t)
 
+;;;; mark-text-object
+(require 'mark-text-object nil t)
+
 ;;;; japanese-holidays
 ;;;; (http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el)
 (add-hook 'calendar-load-hook
@@ -188,6 +191,11 @@
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
 (global-set-key "." 'my-repeat-or-period)
+
+;;;; Mark-text-object
+(global-set-key (kbd "C-c b") 'mark-text-object-block)
+(global-set-key (kbd "C-c w") 'mark-text-object-word)
+(global-set-key (kbd "C-c B") 'mark-text-object-use-char)
 
 ;;;; Useful function
 (global-set-key (kbd "C-c m") 'execute-extended-command)
