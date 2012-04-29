@@ -368,6 +368,7 @@
  '(line-spacing 2)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
+ '(package-archives (quote (("marmalade" . "http://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(partial-completion-mode t)
  '(read-file-name-completion-ignore-case t)
  '(recentf-auto-cleanup (quote never))
