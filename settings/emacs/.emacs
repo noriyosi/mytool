@@ -30,6 +30,8 @@
     scroll-down-command
     isearch-repeat-forward
     isearch-repeat-backward
+    scroll-other-window
+    scroll-other-window-down
     undo))
 
 (defun my-repeat-or-period (N)
