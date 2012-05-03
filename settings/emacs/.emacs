@@ -163,33 +163,6 @@
   (setenv "TERM" "xterm-256color"))
 (add-hook 'eshell-mode-hook 'my-eshell-init)
 
-;; Plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; magit
-(autoload 'magit-status "magit" "" t)
-
-;;;; auto-install
-(when (require 'auto-install nil t)
-  (add-to-list 'load-path auto-install-directory))
-
-;;;; hippie-expand-tab
-(require 'hippie-exp-tab nil t)
-
-;;;; mark-text-object
-(require 'mark-text-object nil t)
-
-;;;; japanese-holidays
-;;;; (http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el)
-(add-hook 'calendar-load-hook
-          (lambda ()
-            (when (require 'japanese-holidays nil t)
-              (setq calendar-holidays
-                    (append japanese-holidays local-holidays other-holidays))
-              (setq mark-holidays-in-calendar t))))
-
-;;;; japanese-coding-settings
-;;;; (http://nijino.homelinux.net/emacs/emacs23-ja.html)
-(require 'japanese-coding-settings nil t)
-
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Repeat
 (global-set-key "." 'my-repeat-or-period)
@@ -223,6 +196,33 @@
 
 ;;;; Org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
+
+;; Plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; magit
+(autoload 'magit-status "magit" "" t)
+
+;;;; auto-install
+(when (require 'auto-install nil t)
+  '(add-to-list 'load-path auto-install-directory))
+
+;;;; hippie-expand-tab
+(require 'hippie-exp-tab nil t)
+
+;;;; mark-text-object
+(require 'mark-text-object nil t)
+
+;;;; japanese-holidays
+;;;; (http://www.meadowy.org/meadow/netinstall/export/799/branches/3.00/pkginfo/japanese-holidays/japanese-holidays.el)
+(add-hook 'calendar-load-hook
+          (lambda ()
+            (when (require 'japanese-holidays nil t)
+              (setq calendar-holidays
+                    (append japanese-holidays local-holidays other-holidays))
+              (setq mark-holidays-in-calendar t))))
+
+;;;; japanese-coding-settings
+;;;; (http://nijino.homelinux.net/emacs/emacs23-ja.html)
+(require 'japanese-coding-settings nil t)
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
