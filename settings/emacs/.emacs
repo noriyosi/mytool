@@ -124,6 +124,11 @@
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))
 
+(defun my-delete-other-windws-or-prev-buffer (second)
+  (interactive "P")
+  (if (one-window-p)
+      (switch-to-buffer (other-buffer (if second (other-buffer) nil)))
+    (delete-other-windows)))
 
 ;; Programable setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (server-start)
@@ -164,6 +169,12 @@
 (add-hook 'eshell-mode-hook 'my-eshell-init)
 
 ;; Key-bind ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; Replace default keybinding.
+;;(global-set-key (kbd "C-h") 'backward-delete-char-untabify)
+(global-set-key (kbd "C-q") 'my-delete-other-windws-or-prev-buffer)
+(global-set-key (kbd "C-c q") 'quoted-insert)
+
 ;;;; Repeat
 (global-set-key "." 'my-repeat-or-period)
 
