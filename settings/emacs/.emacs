@@ -145,6 +145,9 @@
 
 ;;(my-add-exec-path "~/apps/UnxUtils/usr/local/wbin")
 
+;; Recentf-cleanup after a few seconds later only ones.
+(run-with-idle-timer 10 nil 'recentf-cleanup)
+
 ;; Dired ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'dired-load-hook
           (lambda () (load "dired-x")))
