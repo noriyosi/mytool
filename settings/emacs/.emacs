@@ -393,6 +393,7 @@
  '(package-archives (quote (("marmalade" . "http://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(partial-completion-mode t)
  '(read-file-name-completion-ignore-case t)
+ '(read-quoted-char-radix 10)
  '(recentf-auto-cleanup (quote never))
  '(recentf-max-saved-items 1000)
  '(recentf-mode t)
