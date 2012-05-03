@@ -197,7 +197,7 @@
 ;;;; Mark-text-object
 (global-set-key (kbd "C-c b") 'mark-text-object-block)
 (global-set-key (kbd "C-c h") 'mark-text-object-word)
-(global-set-key (kbd "C-c B") 'mark-text-object-use-char)
+(global-set-key (kbd "C-c B") 'mark-text-object-block-use-char)
 
 ;;;; Useful function
 (global-set-key (kbd "C-c m") 'execute-extended-command)

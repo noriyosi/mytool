@@ -116,7 +116,7 @@ So markers must be escaped and '[' must be first.")
                            (mapconcat 'cdr mark-text-object-marker ", ")
                            ": "))))
 
-(defun mark-text-object-use-char (char)
+(defun mark-text-object-block-use-char (char)
   (interactive (mark-text-object-use-char-interactive))
   (let* ((str (char-to-string char))
          (marker (or (assoc str mark-text-object-marker)
