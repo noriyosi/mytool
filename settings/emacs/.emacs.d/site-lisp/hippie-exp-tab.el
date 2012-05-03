@@ -1,6 +1,6 @@
-(eval-when-compile (require 'cl))
-
-(require 'hippie-exp)
+(eval-when-compile
+  (require 'cl)
+  (require 'hippie-exp))
 
 (defface hetab-face
   '((t (:inherit shadow :underline t)))
@@ -16,6 +16,7 @@
 
 (defun hetab-handle-tab (&optional arg)
   (interactive)
+  (require 'hippie-exp)
   (if (hetab-disable-p)
       (indent-for-tab-command arg)
     (hippie-expand arg)))

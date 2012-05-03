@@ -1,5 +1,9 @@
 ;; -*- coding: utf-8-unix; -*-
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+;; (require 'speed-meter)
+;; (my-time-lag "my setting")
+
 ;; For emacs22 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (< emacs-major-version 23)
   ;; setting
@@ -131,8 +135,7 @@
     (delete-other-windows)))
 
 ;; Programable setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(server-start)
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
+;; (server-start)
 
 ;;;; chrome
 (let ((chrome-bin "/usr/bin/google-chrome"))
@@ -213,7 +216,12 @@
 (autoload 'magit-status "magit" "" t)
 
 ;;;; auto-install
-(when (require 'auto-install nil t)
+;; (when (require 'auto-install nil t)
+;;   '(add-to-list 'load-path auto-install-directory))
+
+(require 'loaddefs-auto-install nil t)
+(setq auto-install-directory "~/.emacs.d/auto-install/")
+(when (file-accessible-directory-p auto-install-directory)
   '(add-to-list 'load-path auto-install-directory))
 
 ;;;; hippie-expand-tab
@@ -296,7 +304,7 @@
            (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
 
            (setq cygwin-mount-cygwin-bin-directory cygwin-bin)
-           (require 'setup-cygwin)
+           ;;(require 'setup-cygwin)
            ))
 
        ;; Turns off MS-DOS style path warning.
@@ -342,6 +350,9 @@
          (shell-command (concat "open " "\"" (dired-get-filename) "\"")))
        ))
 
+;; (my-time-lag "my setting")
+;; (my-time-lag "customize-set-variable")
+
 ;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -349,6 +360,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["black" "red" "green3" "yellow3" "blue" "magenta" "cyan3" "white"])
+ '(default-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40))))
  '(dired-recursive-copies (quote always))
  '(dired-recursive-deletes (quote always))
  '(eshell-ask-to-save-history (quote always))
@@ -357,21 +369,17 @@
  '(eshell-ls-dired-initial-args (quote ("-h")))
  '(eshell-ls-exclude-regexp "~\\'")
  '(eshell-ls-initial-args "-h")
-;; '(eshell-ls-use-in-dired t nil (em-ls))
  '(eshell-modules-list (quote (eshell-alias eshell-basic eshell-cmpl eshell-dirs eshell-glob eshell-hist eshell-ls eshell-pred eshell-prompt eshell-rebind eshell-script eshell-smart eshell-term eshell-unix eshell-xtra)))
- '(eshell-prefer-to-shell t nil (eshell))
  '(eshell-preoutput-filter-functions (quote (ansi-color-apply)))
  '(eshell-stringify-t nil)
  '(eshell-term-name "ansi")
  '(eshell-visual-commands (quote ("vi" "top" "screen" "less" "lynx" "ssh" "rlogin" "telnet")))
  '(hippie-expand-try-functions-list (quote (try-complete-file-name-partially try-complete-file-name try-expand-all-abbrevs try-expand-dabbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill try-complete-lisp-symbol-partially try-complete-lisp-symbol)))
  '(icomplete-mode t)
-;; '(ido-mode (quote both) nil (ido))
  '(ido-unc-hosts (quote ido-unc-hosts-net-view))
  '(indent-tabs-mode nil)
  '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 0) (top . 0) (left . 0) (height . 40))))
- '(default-frame-alist (quote ((menu-bar-lines . 0) (width . 100) (height . 40))))
  '(iswitchb-delim " | ")
  '(iswitchb-max-to-show 12)
  '(iswitchb-mode t)
@@ -404,6 +412,8 @@
  '(diff-added ((t (:foreground "blue"))))
  '(diff-removed ((t (:foreground "red"))))
  '(trailing-whitespace ((((class color) (background light)) (:background "linen")))))
+
+;; (my-time-lag "customize-set-variable")
 
 ;; Font ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
