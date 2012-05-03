@@ -196,11 +196,12 @@
 
 ;;;; Mark-text-object
 (global-set-key (kbd "C-c b") 'mark-text-object-block)
-(global-set-key (kbd "C-c w") 'mark-text-object-word)
+(global-set-key (kbd "C-c h") 'mark-text-object-word)
 (global-set-key (kbd "C-c B") 'mark-text-object-use-char)
 
 ;;;; Useful function
 (global-set-key (kbd "C-c m") 'execute-extended-command)
+(global-set-key (kbd "C-c RET") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'my-kill-word-or-region)
 (global-set-key (kbd "C-c i") 'ido-goto-symbol)
 
@@ -222,9 +223,6 @@
 
 ;;;; Org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
-
-;;;; Anything
-(global-set-key (kbd "C-c n") 'anything)
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
