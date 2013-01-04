@@ -212,6 +212,7 @@
             (define-key dired-mode-map (kbd "C-c C-c") 'my-dired-open-file)))
 
 ;;;; Org-mode
+(global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 ;; Plugins ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -390,7 +391,8 @@
  '(line-spacing 2)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
- '(package-archives (quote (("marmalade" . "http://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
+ '(org-agenda-files (quote ("~/tmp/memo.org" "~/.notes")))
+ '(package-archives (quote (("melpa" . "http://melpa.milkbox.net/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
  '(partial-completion-mode t)
  '(read-file-name-completion-ignore-case t)
  '(read-quoted-char-radix 10)
