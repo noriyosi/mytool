@@ -247,6 +247,45 @@
 ;;;; (http://nijino.homelinux.net/emacs/emacs23-ja.html)
 (require 'japanese-coding-settings nil t)
 
+;;;; swank-js
+;; * Install
+;;   node.js
+;;     http://nodejs.org/
+;;   swank-js
+;;     https://github.com/swank-js/swank-js
+;;     npm install -g swank-js
+;;   slime.el
+;;     M-x list-packages
+;;
+;;     Avoid probleme with --cl-accu--
+;;       Edit slime.el.
+;;         before: lexical-binding: t
+;;         after:  lexical-binding: nil
+;;       Delete slime.elc.
+;;
+;;   swank-js.el
+;;     M-x customize-variable package-archives
+;;       marmalade
+;;       http://marmalade-repo.org/packages/
+;;
+;; * .emacs settings
+;;   (global-set-key [f5] 'slime-js-reload)
+;;   (add-hook 'js2-mode-hook
+;;             (lambda ()
+;;               (slime-js-minor-mode 1)))
+;;
+;;   (add-hook 'css-mode-hook
+;;             (lambda ()
+;;               (define-key css-mode-map "\M-\C-x" 'slime-js-refresh-css)
+;;               (define-key css-mode-map "\C-c\C-r" 'slime-js-embed-css)))
+;;
+;; * Run
+;;   swank-js
+;;   M-x slime-connect
+;;   ,target-url
+;;   http://localhost:8009
+;;   ,select-remote
+
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
   (setq indent-tabs-mode nil)
