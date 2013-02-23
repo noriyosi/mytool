@@ -280,11 +280,11 @@
 ;;               (define-key css-mode-map "\C-c\C-r" 'slime-js-embed-css)))
 ;;
 ;; * Run
-;;   swank-js
+;;   cmd> swank-js
 ;;   M-x slime-connect
-;;   ,target-url
-;;   http://localhost:8009
-;;   ,select-remote
+;;   repl> ,target-url
+;;   Web Browser: http://localhost:8009
+;;   repl> ,select-remote
 
 ;; Mode setting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my-c-setting ()
