@@ -5,7 +5,7 @@ GitHub メモ
 [マニュアル]
   https://help.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh
 
-[HTTPS の手順]
+[手順]
 1. SSH キー作成
   $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
@@ -15,12 +15,12 @@ GitHub メモ
   ssh key をコピー
     $ cat id_rsa.pub > /dev/clipboard
 
-3. HTTPS で Clone
-  git clone https://github.com/noriyosi/mytools.git
+3. Clone
+  $ git clone git@github.com:noriyosi/mytool.git
 
-4. HTTPS で Push
+4. Push
   - 編集
   - git add <file>
   - git commit -m "Your comments"
-  - git push origin master
+  - git push
 
