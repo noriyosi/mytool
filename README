@@ -1,26 +1,32 @@
-GitHub メモ 
+GitHub メモ
+
+
+[GitHub Desktop]
+  https://desktop.github.com/
+  インストール先 C:\Users\noriyosi\AppData\Local\GitHubDesktop
+
 [Git for Windows]
   https://github.com/git-for-windows/git/releases/latest
 
-[マニュアル]
-  https://help.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh
-
-[手順]
-1. SSH キー作成
-  $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-
-2. Account に SSH キーを登録
-  https://github.com/account
-
-  ssh key をコピー
-    $ cat id_rsa.pub > /dev/clipboard
-
-3. Clone
-  $ git clone git@github.com:noriyosi/mytool.git
-
-4. Push
-  - 編集
-  - git add <file>
-  - git commit -m "Your comments"
-  - git push
+　　参考マニュアル
+　　  https://help.github.com/ja/github/authenticating-to-github/connecting-to-github-with-ssh
+　　
+　　手順
+　　1. SSH キー作成
+　　  $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+　　
+　　2. Account に SSH キーを登録
+　　  https://github.com/account
+　　
+　　  ssh key をコピー
+　　    $ cat id_rsa.pub > /dev/clipboard
+　　
+　　3. Clone
+　　  $ git clone git@github.com:noriyosi/mytool.git
+　　
+　　4. Push
+　　  - 編集
+　　  - git add <file>
+　　  - git push
+　　  - git commit -m "Your comments"
 
