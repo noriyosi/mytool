@@ -5,6 +5,9 @@ GitHub メモ
   https://desktop.github.com/
   インストール先 C:\Users\noriyosi\AppData\Local\GitHubDesktop
 
+
+下記はコマンド操作用の手順
+
 [Git for Windows]
   https://github.com/git-for-windows/git/releases/latest
 
@@ -29,4 +32,3 @@ GitHub メモ
 　　  - git add <file>
 　　  - git push
 　　  - git commit -m "Your comments"
-
